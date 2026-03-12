@@ -6,7 +6,7 @@ permissions:
   id-token: write
   contents: read
 env:
-  DOTNET_VERSION: '10.0.103'
+  DOTNET_VERSION: '10.0.102'
   BUILD_CONFIGURATION: 'Release'
 jobs:
     build:
@@ -26,6 +26,17 @@ jobs:
           run: dotnet publish src/TaskApi/TaskApi.csproj --configuration ${{env.BUILD_CONFIGURATION}} -o artifacts
         - name: Upload artifact
           uses: actions/upload-artifact@v4
+          with:
+            name: uv-artifact
+            path: artifacts/
+    
+    deploy-dev:
+      name: "Deploy to Azure"
+      runs-on: ubuntu-latest
+      
+      steps:
+        - name: Download artifact
+          uses: actions/download-artifact@v4
           with:
             name: uv-artifact
             path: artifacts/
