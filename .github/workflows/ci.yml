@@ -1,8 +1,12 @@
-name: Pull Request Verification
+name: Continuous Integration
 
 on:
-  pull_request:
-    
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
 
 env:
   DOTNET_VERSION: "10.0.102"
@@ -10,7 +14,7 @@ env:
 
 jobs:
   build:
-    name: "job pull request verificacion"
+    name: "CI"
     runs-on: ubuntu-latest
 
     steps:
@@ -21,9 +25,9 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{env.DOTNET_VERSION}}
-
-      - name: Build with dotnet
-        run: dotnet build --configuration ${{env.BUILD_CONFIGURATION}}
     
       - name: Test
         run: dotnet test --configuration ${{env.BUILD_CONFIGURATION}} 
+      
+      - name: Dotnet Publish
+        run: dotnet publish --configuration ${{env.BUILD_CONFIGURATION}} -o artifacts
